@@ -1,3 +1,5 @@
+
+
 <?php echo $__env->make('admin.layouts.components.asset_datatables', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 <?php $__env->startSection('title'); ?>
     <h1>
