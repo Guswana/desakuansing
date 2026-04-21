@@ -28,7 +28,14 @@ if (! function_exists('bps_dashboard_blue_mapbox_key')) {
     function bps_dashboard_blue_mapbox_key()
     {
         $config = bps_dashboard_blue_map_config();
-        return trim((string) ($config['mapbox_key'] ?? ''));
+        $key = trim((string) ($config['mapbox_key'] ?? ''));
+        
+        // Fallback ke setting global (sesuai pola tema lain)
+        if (empty($key) && function_exists('setting')) {
+            $key = trim((string) setting('mapbox_key'));
+        }
+        
+        return $key;
     }
 }
 
