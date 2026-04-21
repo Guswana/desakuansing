@@ -439,6 +439,9 @@ function set_marker_multi_content(
 }
 
 function getBaseLayers(peta, access_token, jenis_peta) {
+  var mapboxToken = (access_token || "").trim();
+  var selectedJenisPeta = (jenis_peta || "").toString();
+
   //Menampilkan BaseLayers Peta
   var defaultLayer = L.tileLayer.provider("OpenStreetMap.Mapnik", {
     attribution:
@@ -450,68 +453,64 @@ function getBaseLayers(peta, access_token, jenis_peta) {
       '<a href="https://openstreetmap.org/copyright">© OpenStreetMap</a> | <a href="https://github.com/OpenSID/OpenSID">OpenSID</a>',
   });
 
-  if (access_token) {
-    mbGLstr = L.mapboxGL({
-      accessToken: access_token,
+  if (mapboxToken) {
+    var mbGLstr = L.mapboxGL({
+      accessToken: mapboxToken,
       style: "mapbox://styles/mapbox/streets-v11",
       attribution:
         '<a href="https://www.mapbox.com/about/maps">© Mapbox</a> | <a href="https://github.com/OpenSID/OpenSID">OpenSID</a>',
     });
 
-    mbGLsat = L.mapboxGL({
-      accessToken: access_token,
+    var mbGLsat = L.mapboxGL({
+      accessToken: mapboxToken,
       style: "mapbox://styles/mapbox/satellite-v9",
       attribution:
         '<a href="https://www.mapbox.com/about/maps">© Mapbox</a> | <a href="https://github.com/OpenSID/OpenSID">OpenSID</a>',
     });
 
-    mbGLstrsat = L.mapboxGL({
-      accessToken: access_token,
+    var mbGLstrsat = L.mapboxGL({
+      accessToken: mapboxToken,
       style: "mapbox://styles/mapbox/satellite-streets-v11",
       attribution:
         '<a href="https://www.mapbox.com/about/maps">© Mapbox</a> | <a href="https://github.com/OpenSID/OpenSID">OpenSID</a>',
     });
+
+    switch (selectedJenisPeta) {
+      case "1":
+        defaultLayer.addTo(peta);
+        break;
+      case "2":
+        OpenStreetMap.addTo(peta);
+        break;
+      case "3":
+        mbGLstr.addTo(peta);
+        break;
+      case "4":
+        mbGLsat.addTo(peta);
+        break;
+      default:
+        mbGLstrsat.addTo(peta);
+    }
+
+    return {
+      OpenStreetMap: defaultLayer,
+      "OpenStreetMap H.O.T.": OpenStreetMap,
+      "Mapbox Streets": mbGLstr,
+      "Mapbox Satellite": mbGLsat,
+      "Mapbox Satellite-Street": mbGLstrsat,
+    };
+  }
+
+  if (selectedJenisPeta === "2") {
+    OpenStreetMap.addTo(peta);
   } else {
-    mbGLstr = L.tileLayer.provider("OpenStreetMap.Mapnik", {
-      attribution:
-        '<a href="https://openstreetmap.org/copyright">© OpenStreetMap</a> | <a href="https://github.com/OpenSID/OpenSID">OpenSID</a>',
-    });
-    mbGLsat = L.tileLayer.provider("OpenStreetMap.Mapnik", {
-      attribution:
-        '<a href="https://openstreetmap.org/copyright">© OpenStreetMap</a> | <a href="https://github.com/OpenSID/OpenSID">OpenSID</a>',
-    });
-    mbGLstrsat = L.tileLayer.provider("OpenStreetMap.Mapnik", {
-      attribution:
-        '<a href="https://openstreetmap.org/copyright">© OpenStreetMap</a> | <a href="https://github.com/OpenSID/OpenSID">OpenSID</a>',
-    });
+    defaultLayer.addTo(peta);
   }
 
-  switch (jenis_peta) {
-    case "1":
-      defaultLayer.addTo(peta);
-      break;
-    case "2":
-      OpenStreetMap.addTo(peta);
-      break;
-    case "3":
-      mbGLstr.addTo(peta);
-      break;
-    case "4":
-      mbGLsat.addTo(peta);
-      break;
-    default:
-      mbGLstrsat.addTo(peta);
-  }
-
-  var baseLayers = {
+  return {
     OpenStreetMap: defaultLayer,
     "OpenStreetMap H.O.T.": OpenStreetMap,
-    "Mapbox Streets": mbGLstr,
-    "Mapbox Satellite": mbGLsat,
-    "Mapbox Satellite-Street": mbGLstrsat,
   };
-
-  return baseLayers;
 }
 
 function wilayah_property(set_marker, set_content = false, tampil_luas = 0) {

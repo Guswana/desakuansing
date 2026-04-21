@@ -1,0 +1,43 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+
+if (! function_exists('bps_dashboard_blue_map_config')) {
+    function bps_dashboard_blue_map_config()
+    {
+        static $config;
+
+        if ($config !== null) {
+            return $config;
+        }
+
+        $config = [];
+        $configPath = dirname(__DIR__) . '/config/map.php';
+
+        if (is_file($configPath)) {
+            $loadedConfig = require $configPath;
+
+            if (is_array($loadedConfig)) {
+                $config = $loadedConfig;
+            }
+        }
+
+        return $config;
+    }
+}
+
+if (! function_exists('bps_dashboard_blue_mapbox_key')) {
+    function bps_dashboard_blue_mapbox_key()
+    {
+        $config = bps_dashboard_blue_map_config();
+        return trim((string) ($config['mapbox_key'] ?? ''));
+    }
+}
+
+if (! function_exists('bps_dashboard_blue_mapbox_about_url')) {
+    function bps_dashboard_blue_mapbox_about_url()
+    {
+        $config = bps_dashboard_blue_map_config();
+        $aboutUrl = trim((string) ($config['mapbox_about_url'] ?? ''));
+
+        return $aboutUrl !== '' ? $aboutUrl : 'https://www.mapbox.com/about/maps';
+    }
+}

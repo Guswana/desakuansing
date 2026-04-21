@@ -1,4 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php require_once dirname(dirname(__DIR__)) . '/commons/mapbox_helper.php'; ?>
 
 <?php if($pembangunan) : ?>
   <nav role="navigation" aria-label="navigation" class="breadcrumb">
@@ -92,20 +93,31 @@
     $(document).ready(function() {
       let lat = "<?= $pembangunan->lat ?? $desa['lat']; ?>";
       let lng = "<?= $pembangunan->lng ?? $desa['lng']; ?>";
-      let posisi = [lat, lng];
+      let posisi = BpsDashboardBlueMapbox.toLngLat(lat, lng);
       let zoom = 15;
-      let logo = L.icon({
-        iconUrl: "<?= asset('images/gis/point/construction.png'); ?>",
+      var mapboxKey = <?= json_encode(bps_dashboard_blue_mapbox_key()) ?>;
+      var jenisPetaDefault = mapboxKey ? "5" : "<?= setting('jenis_peta') ?>";
+
+      BpsDashboardBlueMapbox.createMap({
+        accessToken: mapboxKey,
+        center: posisi,
+        container: 'map',
+        maxZoom: <?= setting('max_zoom_peta') ?>,
+        minZoom: <?= setting('min_zoom_peta') ?>,
+        onLoad: function (map) {
+          BpsDashboardBlueMapbox.addMarker(map, {
+            element: BpsDashboardBlueMapbox.createImageMarkerElement(
+              "<?= asset('images/gis/point/construction.png'); ?>",
+              'bps-mapbox-marker--construction'
+            ),
+            lngLat: posisi,
+          });
+        },
+        showNavigation: true,
+        showStyleSwitcher: false,
+        styleId: jenisPetaDefault,
+        zoom: zoom,
       });
-
-      var options = {
-          maxZoom: <?= setting('max_zoom_peta') ?>,
-          minZoom: <?= setting('min_zoom_peta') ?>,
-      };
-
-      pembangunan = L.map('map', options).setView(posisi, zoom);
-      getBaseLayers(pembangunan, "<?= setting('mapbox_key') ?>", "<?= setting('jenis_peta') ?>");
-      pembangunan.addLayer(new L.Marker(posisi, {icon:logo}));
     });
   </script>
   <?php else : ?>
