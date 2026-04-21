@@ -1,4 +1,12 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php
+require_once dirname(__DIR__) . '/commons/mapbox_helper.php';
+
+$mapbox_key = bps_dashboard_blue_mapbox_key();
+$map_external_url = $mapbox_key
+  ? 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11.html?title=false&access_token=' . $mapbox_key . '#15/' . $data_config['lat'] . '/' . $data_config['lng']
+  : 'https://www.openstreetmap.org/#map=15/' . $data_config['lat'] . '/' . $data_config['lng'];
+?>
 
 <div class="box box-primary box-solid">
   <div class="box-header">
@@ -9,8 +17,8 @@
   <div class="box-body">
     <div id="map_canvas" style="height:200px;"></div>
     <button class="btn btn-accent btn-block mt-5"><a
-        href="https://www.openstreetmap.org/#map=15/<?=$data_config['lat']."/".$data_config['lng']?>"
-        style="color:#fff;" target="_blank">Buka Peta</a></button>
+        href="<?= $map_external_url ?>"
+        style="color:#fff;" target="_blank" rel="noopener noreferrer">Buka Peta</a></button>
     <button class="btn btn-accent btn-block mt-5" data-bs-toggle="modal" data-bs-target="#detail">
       Detail
     </button>
@@ -79,27 +87,37 @@
 <script>
   //Jika posisi kantor desa belum ada, maka posisi peta akan menampilkan seluruh Indonesia
   <?php if (!empty($data_config['lat']) && !empty($data_config['lng'])): ?>
-    var posisi = [<?=$data_config['lat'].",".$data_config['lng']?>];
+    var posisi = BpsDashboardBlueMapbox.toLngLat(<?= json_encode($data_config['lat']) ?>, <?= json_encode($data_config['lng']) ?>);
     var zoom = <?=$data_config['zoom'] ?: 10?>;
+    var hasKantorMarker = true;
   <?php else: ?>
-    var posisi = [-1.0546279422758742,116.71875000000001];
+    var posisi = BpsDashboardBlueMapbox.toLngLat(-1.0546279422758742, 116.71875000000001);
     var zoom = 10;
+    var hasKantorMarker = false;
   <?php endif; ?>
 
-  var options = {
-      maxZoom: <?= setting('max_zoom_peta') ?>,
-      minZoom: <?= setting('min_zoom_peta') ?>,
-  };
-  
-  var lokasi_kantor = L.map('map_canvas', options).setView(posisi, zoom);
+  var mapboxKey = <?= json_encode($mapbox_key) ?>;
+  var jenisPetaDefault = mapboxKey ? "5" : "<?= setting('jenis_peta') ?>";
+  BpsDashboardBlueMapbox.createMap({
+    accessToken: mapboxKey,
+    center: posisi,
+    container: 'map_canvas',
+    maxZoom: <?= setting('max_zoom_peta') ?>,
+    minZoom: <?= setting('min_zoom_peta') ?>,
+    onLoad: function (map) {
+      if (!hasKantorMarker) {
+        return;
+      }
 
-  //Menampilkan BaseLayers Peta
-  var baseLayers = getBaseLayers(lokasi_kantor, "<?= setting('mapbox_key') ?>", "<?= setting('jenis_peta') ?>");
-
-  L.control.layers(baseLayers, null, {position: 'topright', collapsed: true}).addTo(lokasi_kantor);
-
-  //Jika posisi kantor desa belum ada, maka posisi peta akan menampilkan seluruh Indonesia
-  <?php if (!empty($data_config['lat']) && !empty($data_config['lng'])): ?>
-    var kantor_desa = L.marker(posisi).addTo(lokasi_kantor);
-  <?php endif; ?>
+      BpsDashboardBlueMapbox.addMarker(map, {
+        color: '#0b66c3',
+        lngLat: posisi,
+      });
+    },
+    showNavigation: true,
+    showStyleSwitcher: true,
+    styleControlPosition: 'top-right',
+    styleId: jenisPetaDefault,
+    zoom: zoom,
+  });
 </script>

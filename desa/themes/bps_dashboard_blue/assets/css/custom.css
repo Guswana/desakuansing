@@ -37,6 +37,72 @@
   position: relative;
 }
 
+.bps-mapbox-style-switcher.mapboxgl-ctrl-group {
+  overflow: visible;
+  position: relative;
+}
+
+.bps-mapbox-style-switcher__toggle {
+  width: 29px;
+  height: 29px;
+  border: 0;
+  background: #fff;
+  color: #12335e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.bps-mapbox-style-switcher__panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  min-width: 185px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(18, 51, 94, 0.14);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 14px 28px rgba(12, 46, 89, 0.18);
+  backdrop-filter: blur(8px);
+  z-index: 8;
+}
+
+.bps-mapbox-style-switcher.is-open .bps-mapbox-style-switcher__panel {
+  display: block;
+}
+
+.bps-mapbox-style-switcher__option {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: #12335e;
+  padding: 0.22rem 0;
+  cursor: pointer;
+}
+
+.bps-mapbox-style-switcher__option input {
+  margin: 0;
+}
+
+.bps-mapbox-marker {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 72% 72%;
+  border: 2px solid #0b66c3;
+  box-shadow: 0 10px 22px rgba(7, 51, 102, 0.28);
+}
+
+.bps-mapbox-marker--construction {
+  border-color: #f08a24;
+}
+
 .theme-bps-dashboard .dashboard-shell::before {
   content: "";
   position: fixed;

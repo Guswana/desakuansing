@@ -1,4 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php require_once dirname(dirname(__DIR__)) . '/commons/mapbox_helper.php'; ?>
 
 <nav role="navigation" aria-label="navigation" class="breadcrumb">
   <ol>
@@ -73,9 +74,9 @@
 
   <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="modalLokasi" tabindex="-1" aria-modal="true" role="dialog">
     <div class="modal-dialog relative w-auto pointer-events-none">
-      <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-        <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-          <h5 class="text-h6">Lokasi Penjual</h5>
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+          <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
+          <h5 class="text-h6 modal-title">Lokasi Penjual</h5>
         </div>
         <div class="modal-body p-4">
         </div>
@@ -85,7 +86,10 @@
 
   <script type="text/javascript">
     $(document).ready(function () {
-      document.querySelector('#modalLokasi').addEventListener('shown.bs.modal', function (event) {
+      var modalElement = document.querySelector('#modalLokasi');
+      var pelapakMap = null;
+
+      modalElement.addEventListener('shown.bs.modal', function (event) {
         const link = $(event.relatedTarget);
         const title = link.data('title');
         const modal = $(this);
@@ -101,31 +105,49 @@
             </div>
           </div>`;
 
-        const posisi = [link.data('lat'), link.data('lng')];
+        const posisi = BpsDashboardBlueMapbox.toLngLat(link.data('lat'), link.data('lng'));
         const zoom = link.data('zoom') || 10;
-        $("#lat").val(link.data('lat'));
-        $("#lng").val(link.data('lng'));
-
-        var options = {
-            maxZoom: <?= setting('max_zoom_peta') ?>,
-            minZoom: <?= setting('min_zoom_peta') ?>,
-        };
-
-        // Inisialisasi tampilan peta
-        pelapak = L.map('map', options).setView(posisi, zoom);
 
         // Menampilkan BaseLayers Peta
-        getBaseLayers(pelapak, "<?= setting('mapbox_key') ?>", "<?= setting('jenis_peta') ?>");
+        var mapboxKey = <?= json_encode(bps_dashboard_blue_mapbox_key()) ?>;
+        var jenisPetaDefault = mapboxKey ? "5" : "<?= setting('jenis_peta') ?>";
+        if (pelapakMap) {
+          pelapakMap.remove();
+          pelapakMap = null;
+        }
 
-        // Tampilkan Posisi Pelapak
-        marker = new L.Marker(posisi, {
-          draggable: false
+        pelapakMap = BpsDashboardBlueMapbox.createMap({
+          accessToken: mapboxKey,
+          center: posisi,
+          container: 'map',
+          maxZoom: <?= setting('max_zoom_peta') ?>,
+          minZoom: <?= setting('min_zoom_peta') ?>,
+          onLoad: function (map) {
+            BpsDashboardBlueMapbox.addMarker(map, {
+              color: '#f08a24',
+              lngLat: posisi,
+              popupHtml: popup,
+            });
+
+            setTimeout(function () {
+              map.resize();
+            }, 120);
+          },
+          showNavigation: true,
+          showScale: true,
+          showStyleSwitcher: false,
+          styleId: jenisPetaDefault,
+          zoom: zoom,
         });
+      });
 
-        pelapak.addLayer(marker);
-        L.marker(posisi).addTo(pelapak).bindPopup(popup);
-        L.control.scale().addTo(pelapak);
-        pelapak.invalidateSize();
+      modalElement.addEventListener('hidden.bs.modal', function () {
+        if (pelapakMap) {
+          pelapakMap.remove();
+          pelapakMap = null;
+        }
+
+        $(this).find('.modal-body').empty();
       });
     });
   </script>

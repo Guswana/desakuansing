@@ -1,4 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php require_once dirname(dirname(__DIR__)) . '/commons/mapbox_helper.php'; ?>
 
 <nav role="navigation" aria-label="navigation" class="breadcrumb">
   <ol>
@@ -10,7 +11,7 @@
 <?php if($pembangunan) : ?>
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 py-5">
     <?php foreach($pembangunan as $data) : ?>
-      <div class="space-y-3">
+      <div class="space-y-3 this-product">
         <?php if($data->foto && is_file(LOKASI_GALERI . $data->foto)) : ?>
         <img class="h-44 w-full object-cover object-center bg-gray-300 dark:bg-gray-600"
           src="<?= base_url(LOKASI_GALERI . $data->foto) ?>" alt="Foto Pembangunan" />
@@ -53,7 +54,7 @@
         class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
         <div
           class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-          <h5 class="text-h5">Lokasi Pembangunan</h5>
+          <h5 class="text-h5 modal-title">Lokasi Pembangunan</h5>
         </div>
         <div class="modal-body p-4">
         </div>
@@ -63,7 +64,10 @@
 
   <script type="text/javascript">
     $(document).ready(function () {
-      document.querySelector('#modalLokasi').addEventListener('shown.bs.modal', function (event) {
+      var modalElement = document.querySelector('#modalLokasi');
+      var pembangunanMap = null;
+
+      modalElement.addEventListener('shown.bs.modal', function (event) {
         const link = $(event.relatedTarget);
         const title = link.data('title');
         const modal = $(this);
@@ -79,35 +83,49 @@
                 </div>
               </div>`;
 
-        const posisi = [link.data('lat'), link.data('lng')];
+        const posisi = BpsDashboardBlueMapbox.toLngLat(link.data('lat'), link.data('lng'));
         const zoom = link.data('zoom') || 10;
-        $("#lat").val(link.data('lat'));
-        $("#lng").val(link.data('lng'));
-
-        
-        var options = {
-            maxZoom: <?= setting('max_zoom_peta') ?>,
-            minZoom: <?= setting('min_zoom_peta') ?>,
-        };
-
-        // Inisialisasi tampilan peta
-        pembangunan = L.map('map', options).setView(posisi, zoom);
 
         // Menampilkan BaseLayers Peta
-        getBaseLayers(pembangunan, "<?= setting('mapbox_key') ?>", "<?= setting('jenis_peta') ?>");
+        var mapboxKey = <?= json_encode(bps_dashboard_blue_mapbox_key()) ?>;
+        var jenisPetaDefault = mapboxKey ? "5" : "<?= setting('jenis_peta') ?>";
+        if (pembangunanMap) {
+          pembangunanMap.remove();
+          pembangunanMap = null;
+        }
 
-        // Tampilkan Posisi pembangunan
-        marker = new L.Marker(posisi, {
-          draggable: false
-        });
+        pembangunanMap = BpsDashboardBlueMapbox.createMap({
+          accessToken: mapboxKey,
+          center: posisi,
+          container: 'map',
+          maxZoom: <?= setting('max_zoom_peta') ?>,
+          minZoom: <?= setting('min_zoom_peta') ?>,
+          onLoad: function (map) {
+            BpsDashboardBlueMapbox.addMarker(map, {
+              color: '#0b66c3',
+              lngLat: posisi,
+              popupHtml: popup,
+            });
 
-        pembangunan.addLayer(marker);
-        L.icon({
-          iconUrl: "<?= asset('images/gis/point/construction.png'); ?>",
+            setTimeout(function () {
+              map.resize();
+            }, 120);
+          },
+          showNavigation: true,
+          showScale: true,
+          showStyleSwitcher: false,
+          styleId: jenisPetaDefault,
+          zoom: zoom,
         });
-        L.marker(posisi).addTo(pembangunan).bindPopup(popup);
-        L.control.scale().addTo(pembangunan);
-        pembangunan.invalidateSize();
+      });
+
+      modalElement.addEventListener('hidden.bs.modal', function () {
+        if (pembangunanMap) {
+          pembangunanMap.remove();
+          pembangunanMap = null;
+        }
+
+        $(this).find('.modal-body').empty();
       });
     });
   </script>
