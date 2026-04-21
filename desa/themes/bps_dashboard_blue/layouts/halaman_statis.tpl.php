@@ -9,7 +9,7 @@
   <?php $this->load->view($folder_themes . '/commons/source_js') ?>
 </head>
 
-<body class="font-primary bg-gray-100">
+<body class="font-primary bg-gray-100 theme-bps-dashboard">
 
   <?php $this->load->view($folder_themes . '/commons/loading_screen') ?>
   <?php $this->load->view($folder_themes . '/commons/header') ?>
