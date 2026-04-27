@@ -1093,14 +1093,7 @@
   gap: 0.8rem;
 }
 
-@media (min-width: 1440px) {
-  .dashboard-highlight-grid {
-    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
-  }
-}
-
-.dashboard-highlight-slider,
-.dashboard-highlight-headline {
+.dashboard-highlight-slider {
   min-width: 0;
 }
 

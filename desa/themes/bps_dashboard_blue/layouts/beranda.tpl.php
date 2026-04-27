@@ -48,9 +48,6 @@
           <div class="dashboard-highlight-slider">
             <?php $this->load->view($folder_themes .'/partials/slider') ?>
           </div>
-          <div class="dashboard-highlight-headline">
-            <?php $this->load->view($folder_themes .'/partials/headline') ?>
-          </div>
         </section>
       <?php endif; ?>
 
