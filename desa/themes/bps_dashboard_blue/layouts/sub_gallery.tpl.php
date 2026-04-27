@@ -7,18 +7,23 @@
   <?php $this->load->view($folder_themes . '/commons/source_css') ?>
   <?php $this->load->view($folder_themes . '/commons/source_js') ?>
 </head>
-<body class="font-primary bg-gray-100">
+<body class="font-primary bg-gray-100 theme-bps-dashboard">
   
   <?php $this->load->view($folder_themes . '/commons/loading_screen') ?>
   <?php $this->load->view($folder_themes . '/commons/header') ?>
-  <div class="container mx-auto lg:px-5 px-3 flex flex-col lg:flex-row my-5 gap-3 lg:gap-5 justify-between text-gray-600">
-    <main class="lg:w-2/3 w-full overflow-hidden space-y-1 bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
-      <?php $this->load->view($folder_themes . '/partials/sub_gallery') ?>
-      <?php $data['paging_page'] = ($paging_page ?? 'first/sub_gallery/'. $parrent['id']) ?>
-      <?php $this->load->view($folder_themes .'/commons/paging', $data) ?>
-    </main>
-    <div class="lg:w-1/3 w-full">
-      <?php $this->load->view($folder_themes .'/partials/sidebar') ?>
+  <div class="container mx-auto lg:px-4 px-3 my-5 dashboard-content-wrap text-gray-600">
+    <div class="dashboard-main-grid">
+      <?php $this->load->view($folder_themes . '/partials/left_sidebar') ?>
+      <main class="dashboard-center-column">
+        <div class="overflow-hidden space-y-1 bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
+          <?php $this->load->view($folder_themes . '/partials/sub_gallery') ?>
+          <?php $data['paging_page'] = ($paging_page ?? 'first/sub_gallery/'. $parrent['id']) ?>
+          <?php $this->load->view($folder_themes .'/commons/paging', $data) ?>
+        </div>
+      </main>
+      <aside class="dashboard-right-column dashboard-sidebar-panel">
+        <?php $this->load->view($folder_themes .'/partials/sidebar') ?>
+      </aside>
     </div>
   </div>
 

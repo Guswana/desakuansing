@@ -6,38 +6,43 @@
   <?php $this->load->view($folder_themes . '/commons/meta') ?>
   <?php $this->load->view($folder_themes . '/commons/source_css') ?>
 </head>
-<body class="font-primary bg-gray-100">
+<body class="font-primary bg-gray-100 theme-bps-dashboard">
 
   <?php $this->load->view($folder_themes . '/commons/loading_screen') ?>
   <?php $this->load->view($folder_themes . '/commons/header') ?>
 
-  <div class="container mx-auto lg:px-5 px-3 flex flex-col-reverse lg:flex-row my-5 gap-3 lg:gap-5 justify-between text-gray-600">
-    <div class="lg:w-1/3 w-full">
-      <?php $this->load->view($folder_themes .'/partials/statistics/sidenav') ?>
+  <div class="container mx-auto lg:px-4 px-3 my-5 dashboard-content-wrap text-gray-600">
+    <div class="dashboard-main-grid">
+      <?php $this->load->view($folder_themes . '/partials/left_sidebar') ?>
+      <main class="dashboard-center-column">
+        <div class="space-y-1 bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
+          <?php
+            switch ($tipe) {
+              case null:
+              case '0':
+                $page = '/partials/statistics/default';
+                break;
+              case '3':
+                $page = '/partials/statistics/regions';
+                break;
+              case '4':
+                $page = '/partials/statistics/voters';
+                break;
+              default:
+                $page = '/commons/404';
+                break;
+            }
+            ?>
+          <?php $this->load->view($folder_themes . $page) ?>
+          <script>
+            const enable3d = <?=$this->setting->statistik_chart_3d ?> ? true : false;
+          </script>
+        </div>
+      </main>
+      <aside class="dashboard-right-column dashboard-sidebar-panel">
+        <?php $this->load->view($folder_themes .'/partials/statistics/sidenav') ?>
+      </aside>
     </div>
-    <main class="lg:w-3/4 w-full space-y-1 bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
-      <?php
-        switch ($tipe) {
-          case null:
-          case '0':
-            $page = '/partials/statistics/default';
-            break;
-          case '3':
-            $page = '/partials/statistics/regions';
-            break;
-          case '4':
-            $page = '/partials/statistics/voters';
-            break;
-          default:
-            $page = '/commons/404';
-            break;
-        }
-        ?>
-      <?php $this->load->view($folder_themes . $page) ?>
-      <script>
-        const enable3d = <?=$this->setting->statistik_chart_3d ?> ? true : false;
-      </script>
-    </main>
   </div>
 
   <?php $this->load->view($folder_themes .'/commons/footer') ?>
