@@ -45,7 +45,7 @@
     <div class="footer-dashboard-inner text-white py-5 px-5 rounded-t-xl text-sm flex flex-col gap-3 lg:flex-row justify-between items-center text-center lg:text-left">
         <span class="space-y-2">
             <p>Hak cipta situs &copy; <?= date('Y') ?> - <?= NAMA_DESA ?></p>
-            <p><a href="https://opensid.my.id" class="underline decoration-blue-100 underline-offset-1 decoration-2" target="_blank" rel="noopener">BPS Dashboard Blue <?= THEME_VERSION ?></a> - <a href="https://opensid.my.id" class="underline decoration-blue-100 underline-offset-1 decoration-2" target="_blank" rel="noopener">OpenSID <?= ambilVersi() ?></a> -
+            <p><a href="https://opensid.my.id" class="underline decoration-blue-100 underline-offset-1 decoration-2" target="_blank" rel="noopener">BPS Dashboard Blue v1.0.0</a> - <a href="https://opensid.my.id" class="underline decoration-blue-100 underline-offset-1 decoration-2" target="_blank" rel="noopener">OpenSID <?= ambilVersi() ?></a> -
             <?php if (file_exists('mitra')): ?>
                 Hosting didukung <a href="https://my.idcloudhost.com/aff.php?aff=3172" rel="noopener noreferrer" target="_blank">
                 <img src="<?= base_url('/assets/images/Logo-IDcloudhost.png')?>" class="h-4 inline-block" alt="Logo-IDCloudHost" title="Logo-IDCloudHost"></a>
