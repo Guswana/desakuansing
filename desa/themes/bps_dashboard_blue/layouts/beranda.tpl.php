@@ -20,7 +20,7 @@
     && ($this->uri->segment(2) !== 'index' && $this->uri->segment(1) !== 'index');
 
 ?>
-<div class="container mx-auto lg:px-4 px-3 my-5 dashboard-content-wrap text-gray-700">
+<div class="container mx-auto lg:px-4 px-3 my-5 dashboard-content-wrap dashboard-homepage text-gray-700">
   <div class="dashboard-main-grid">
     <?php $this->load->view($folder_themes .'/partials/left_sidebar') ?>
 
