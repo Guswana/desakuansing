@@ -12,6 +12,26 @@
   $jumlah_slider = isset($slider_gambar['gambar']) && is_array($slider_gambar['gambar']) ? count($slider_gambar['gambar']) : 0;
   $jumlah_widget = isset($w_cos) && is_array($w_cos) ? count($w_cos) : 0;
 
+  $alamat_parts = [];
+  if (!empty($desa['alamat_kantor'])) {
+    $alamat_parts[] = ucwords($desa['alamat_kantor']);
+  }
+  if (!empty($desa['nama_kecamatan'])) {
+    $alamat_parts[] = ucfirst($this->setting->sebutan_kecamatan_singkat) . ' ' . ucwords($desa['nama_kecamatan']);
+  }
+  if (!empty($desa['nama_kabupaten'])) {
+    $alamat_parts[] = ucfirst($this->setting->sebutan_kabupaten_singkat) . ' ' . ucwords($desa['nama_kabupaten']);
+  }
+  if (!empty($desa['nama_propinsi'])) {
+    $alamat_parts[] = 'Provinsi ' . ucwords($desa['nama_propinsi']);
+  }
+  if (!empty($desa['kode_pos'])) {
+    $alamat_parts[] = $desa['kode_pos'];
+  }
+
+  $alamat_lengkap = implode(', ', $alamat_parts);
+  $brand_background = !empty($latar_website) ? $latar_website : gambar_desa($desa['logo']);
+
   $show_highlight = empty($cari)
     && isset($slider_gambar['gambar'])
     && is_array($slider_gambar['gambar'])
@@ -25,6 +45,26 @@
     <?php $this->load->view($folder_themes .'/partials/left_sidebar') ?>
 
     <main class="dashboard-center-column">
+      <section class="dashboard-mobile-brand">
+        <section class="dashboard-left-brand" style="background-image: url(<?= $brand_background ?>);">
+          <div class="dashboard-left-brand-overlay"></div>
+          <div class="dashboard-left-brand-content">
+            <img src="<?= gambar_desa($desa['logo']) ?>" alt="Logo <?= NAMA_DESA ?>" class="dashboard-left-logo">
+            <h4 class="dashboard-left-title"><?= NAMA_DESA ?></h4>
+            <p class="dashboard-left-subtitle"><?= $alamat_lengkap ?: ucfirst($this->setting->sebutan_kecamatan_singkat) . ' ' . ucwords($desa['nama_kecamatan']) ?></p>
+          </div>
+        </section>
+      </section>
+
+      <section class="dashboard-mobile-search">
+        <form action="<?= site_url() ?>" role="form" class="relative dashboard-search-form">
+          <i class="fas fa-search absolute top-1/2 left-0 transform -translate-y-1/2 z-10 px-3 text-gray-500"></i>
+          <input type="text" name="cari" class="form-input px-10 w-full h-12 bg-white relative inline-block dashboard-search-input" placeholder="Cari layanan, berita, atau data desa...">
+        </form>
+      </section>
+
+      <?php $this->load->view($folder_themes . '/commons/running_text') ?>
+
       <section class="dashboard-stat-grid">
         <article class="dashboard-stat-card">
           <span class="dashboard-stat-label">Artikel Ditampilkan</span>
@@ -50,6 +90,7 @@
           </div>
         </section>
       <?php endif; ?>
+
 
       <div class="dashboard-section-head">
         <h3 class="text-h4 text-primary-200"><?= $title ?></h3>

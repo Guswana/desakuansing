@@ -29,6 +29,7 @@
           </aside>
         <?php endif ?>
         <main class="dashboard-center-column">
+          <?php $this->load->view($folder_themes . '/commons/running_text') ?>
           <div class="overflow-hidden space-y-1 bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
             <?php $this->load->view($folder_themes . '/partials/article'); ?>
             <?php $this->load->view($folder_themes . '/partials/comment') ?>

@@ -15,6 +15,7 @@
     <div class="dashboard-main-grid">
       <?php $this->load->view($folder_themes . '/partials/left_sidebar') ?>
       <main class="dashboard-center-column">
+        <?php $this->load->view($folder_themes . '/commons/running_text') ?>
         <div class="space-y-1 bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
           <?php
             switch ($tipe) {

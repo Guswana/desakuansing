@@ -2,6 +2,7 @@
 
 <?php $url = site_url('artikel/' . buat_slug($post)) ?>
 <?php $abstract = potong_teks(strip_tags($post['isi']), 300) ?>
+<?php $jumlah_komentar = $this->db->where('id_artikel', $post['id'])->count_all_results('komentar') ?>
 <?php $image = ($post['gambar'] && is_file(LOKASI_FOTO_ARTIKEL . 'sedang_' . $post['gambar'])) ?
   AmbilFotoArtikel($post['gambar'], 'sedang') :
   gambar_desa($desa['logo']);
@@ -21,6 +22,8 @@
         <?php if ($post['kategori']) : ?>
           <li><i class="fas fa-bookmark mr-1"></i> <?= $post['kategori'] ?></li>
         <?php endif ?>
+        <li><i class="fas fa-eye mr-1"></i> <?= hit($post['hit']) ?> dibaca</li>
+        <li><i class="fas fa-comments mr-1"></i> <?= number_format((int) $jumlah_komentar, 0, ',', '.') ?> komentar</li>
       </ul>
       <a href="<?= $url ?>" class="dashboard-article-readmore">Baca detail <i class="fas fa-arrow-right ml-2 text-xs"></i></a>
     </div>

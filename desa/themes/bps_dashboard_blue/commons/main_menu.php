@@ -6,6 +6,8 @@
       <a href="<?= site_url() ?>" class="dashboard-topbar-home-link" title="Beranda"><i class="fa fa-home"></i></a>
     </div>
 
+    <?php $this->load->view($folder_themes . '/commons/header_clock') ?>
+
     <div class="dashboard-topbar-actions">
       <?php if($this->setting->layanan_mandiri == 1) : ?>
         <a href="<?= site_url('layanan-mandiri') ?>" class="dashboard-topbar-btn">Layanan Mandiri <i class="fas fa-external-link-alt ml-1"></i></a>
