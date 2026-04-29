@@ -10,12 +10,12 @@
     <div class="aparatur-carousel-widget">
       <div class="owl-carousel">
         <?php foreach ($aparatur_desa['daftar_perangkat'] as $data) : ?>
-          <div class="relative space-y-2">
-            <div class="w-3/4 mx-auto">
-              <img src="<?= $data['foto'] ?>" alt="<?= $data['nama'] ?>" class="object-cover object-center bg-gray-300">
+          <div class="aparatur-carousel-slide relative space-y-2">
+            <div class="aparatur-carousel-photo">
+              <img src="<?= $data['foto'] ?>" alt="<?= $data['nama'] ?>" class="aparatur-carousel-image object-cover object-center bg-gray-300">
             </div>
             <?php if ($this->web_widget_model->get_setting('aparatur_desa', 'overlay') == true) : ?>
-              <div class="space-y-1 text-sm text-center z-10">
+              <div class="aparatur-carousel-meta space-y-1 text-sm text-center z-10">
                 <span class="text-h6"><?= $data['nama'] ?></span>
                 <span class="block"><?= $data['jabatan'] ?></span>
                 <?php if ($data['pamong_niap']) : ?>

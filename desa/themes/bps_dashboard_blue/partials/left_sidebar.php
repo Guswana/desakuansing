@@ -31,11 +31,24 @@
 
   $alamat_lengkap = implode(', ', $alamat_parts);
   $brand_background = !empty($latar_website) ? $latar_website : gambar_desa($desa['logo']);
+  $brand_background_position = 'center';
+
+  $brand_background_overrides = [
+    'desa/themes/bps_dashboard_blue/assets/images/brand-background.jpg',
+  ];
+
+  foreach ($brand_background_overrides as $brand_background_override) {
+    if (is_file(FCPATH . $brand_background_override)) {
+      $brand_background = base_url($brand_background_override);
+      $brand_background_position = '28% center';
+      break;
+    }
+  }
 ?>
 
 <aside class="dashboard-left-column">
   <div class="dashboard-left-column-scroll">
-    <section class="dashboard-left-brand" style="background-image: url(<?= $brand_background ?>);">
+    <section class="dashboard-left-brand" style="background-image: url(<?= html_escape($brand_background) ?>); background-position: <?= html_escape($brand_background_position) ?>;">
       <div class="dashboard-left-brand-overlay"></div>
       <div class="dashboard-left-brand-content">
         <img src="<?= gambar_desa($desa['logo']) ?>" alt="Logo <?= NAMA_DESA ?>" class="dashboard-left-logo">

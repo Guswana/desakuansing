@@ -1410,6 +1410,47 @@
   position: relative;
 }
 
+.aparatur-carousel-widget .owl-stage {
+  display: flex;
+  align-items: stretch;
+}
+
+.aparatur-carousel-widget .owl-item {
+  display: flex;
+}
+
+.aparatur-carousel-slide {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.aparatur-carousel-photo {
+  width: 170px;
+  height: 220px;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 0.95rem;
+  background: linear-gradient(180deg, #eef4fb 0%, #dfeaf8 100%);
+  box-shadow: 0 14px 28px -22px rgba(9, 56, 110, 0.72);
+}
+
+.aparatur-carousel-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.aparatur-carousel-meta {
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
 .aparatur-carousel-nav {
   position: absolute;
   inset: 0;
@@ -1446,6 +1487,13 @@
 
 .aparatur-carousel-next {
   right: 0.35rem;
+}
+
+@media (max-width: 480px) {
+  .aparatur-carousel-photo {
+    width: 150px;
+    height: 200px;
+  }
 }
 
 .footer-dashboard .footer-dashboard-inner {
