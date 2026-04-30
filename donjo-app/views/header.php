@@ -104,11 +104,19 @@
 
 
     <!-- Diperlukan untuk global automatic base_url oleh external js file -->
+    <?php
+        $mapboxKey = mapbox_public_token();
+        $jenisPeta = (string) setting('jenis_peta');
+
+        if ($mapboxKey !== '' && ! in_array($jenisPeta, ['3', '4', '5'], true)) {
+            $jenisPeta = '5';
+        }
+    ?>
     <script type="text/javascript">
         var BASE_URL = "<?= base_url() ?>";
         var SITE_URL = "<?= site_url() ?>";
-        var MAPBOX_KEY = '<?= setting('mapbox_key') ?>';
-        var JENIS_PETA = '<?= setting('jenis_peta') ?>';
+        var MAPBOX_KEY = '<?= $mapboxKey ?>';
+        var JENIS_PETA = '<?= $jenisPeta ?>';
         var TAMPIL_LUAS = "<?= setting('tampil_luas_peta') ?>";
     </script>
 

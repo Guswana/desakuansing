@@ -243,6 +243,16 @@ if (! function_exists('setting')) {
     {
         $getSetting = ci()->setting;
 
+        if ($params === 'mapbox_key') {
+            $mapboxKey = '';
+
+            if (! empty($getSetting) && property_exists($getSetting, 'mapbox_key')) {
+                $mapboxKey = trim((string) $getSetting->mapbox_key);
+            }
+
+            return $mapboxKey !== '' ? $mapboxKey : mapbox_public_token();
+        }
+
         if ($params && ! empty($getSetting)) {
             if (property_exists($getSetting, $params)) {
                 return $getSetting->{$params};
@@ -252,6 +262,73 @@ if (! function_exists('setting')) {
         }
 
         return $getSetting;
+    }
+}
+
+if (! function_exists('mapbox_public_token')) {
+    function mapbox_public_token(): string
+    {
+        $setting = ci()->setting ?? null;
+
+        if (is_object($setting) && property_exists($setting, 'mapbox_key')) {
+            $mapboxKey = trim((string) $setting->mapbox_key);
+
+            if ($mapboxKey !== '') {
+                return $mapboxKey;
+            }
+        }
+
+        $configMapboxKey = trim((string) config_item('mapbox_key'));
+
+        if ($configMapboxKey !== '') {
+            return $configMapboxKey;
+        }
+
+        foreach (['MAPBOX_PUBLIC_TOKEN', 'MAPBOX_KEY', 'mapbox_key'] as $envKey) {
+            $envValue = getenv($envKey);
+
+            if ($envValue !== false && trim((string) $envValue) !== '') {
+                return trim((string) $envValue, " \t\n\r\0\x0B\"'");
+            }
+
+            if (! empty($_ENV[$envKey])) {
+                return trim((string) $_ENV[$envKey], " \t\n\r\0\x0B\"'");
+            }
+
+            if (! empty($_SERVER[$envKey])) {
+                return trim((string) $_SERVER[$envKey], " \t\n\r\0\x0B\"'");
+            }
+        }
+
+        $envPath = FCPATH . '.env';
+
+        if (! is_file($envPath) || ! is_readable($envPath)) {
+            return '';
+        }
+
+        $envLines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        if ($envLines === false) {
+            return '';
+        }
+
+        foreach ($envLines as $line) {
+            $trimmedLine = trim((string) $line);
+
+            if ($trimmedLine === '' || strpos($trimmedLine, '#') === 0) {
+                continue;
+            }
+
+            foreach (['MAPBOX_PUBLIC_TOKEN', 'MAPBOX_KEY'] as $envKey) {
+                if (strpos($trimmedLine, $envKey . '=') === 0) {
+                    [, $value] = explode('=', $trimmedLine, 2);
+
+                    return trim((string) $value, " \t\n\r\0\x0B\"'");
+                }
+            }
+        }
+
+        return '';
     }
 }
 
