@@ -12,6 +12,45 @@
     ];
   }
 
+  $current_host = parse_url(site_url(), PHP_URL_HOST) ?: '';
+
+  $normalize_menu_link = static function ($link, $menu_name = '') use ($current_host) {
+    $link = trim((string) $link);
+    $menu_name = strtolower(trim(strip_tags((string) $menu_name)));
+
+    if ($menu_name === 'prestasi desa') {
+      return site_url('artikel/kategori/potensi-desa');
+    }
+
+    if ($link === '' || $link === '#!') {
+      return '#!';
+    }
+
+    if (strpos($link, 'mailto:') === 0 || strpos($link, 'tel:') === 0 || strpos($link, '#') === 0) {
+      return $link;
+    }
+
+    if (preg_match('~^(?:https?:)?//~i', $link)) {
+      $parsed_host = parse_url($link, PHP_URL_HOST) ?: '';
+      $parsed_path = parse_url($link, PHP_URL_PATH) ?: '';
+
+      if ($parsed_host && $current_host && strcasecmp($parsed_host, $current_host) === 0 && $parsed_path !== '') {
+        $link = ltrim($parsed_path, '/');
+      } else {
+        return $link;
+      }
+    }
+
+    if ($current_host && stripos($link, $current_host . '/') === 0) {
+      $link = substr($link, strlen($current_host) + 1);
+    }
+
+    $link = preg_replace('~^/?index\.php/~i', '', $link);
+    $link = ltrim($link, '/');
+
+    return menu_slug($link);
+  };
+
   $alamat_parts = [];
   if (!empty($desa['alamat_kantor'])) {
     $alamat_parts[] = ucwords($desa['alamat_kantor']);
@@ -70,11 +109,11 @@
             </button>
             <ul class="dashboard-accordion-list" x-show="open" x-transition>
               <?php foreach($children as $child): ?>
-                <?php $child_link = $child['link_url'] ?? '#!' ?>
+                <?php $child_link = $normalize_menu_link($child['link_url'] ?? '#!', $child['nama'] ?? '') ?>
                 <li><a href="<?= $child_link ?>"><?= strip_tags($child['nama']) ?></a></li>
                 <?php if(!empty($child['childrens'])): ?>
                   <?php foreach($child['childrens'] as $subchild): ?>
-                    <?php $subchild_link = $subchild['link_url'] ?? '#!' ?>
+                    <?php $subchild_link = $normalize_menu_link($subchild['link_url'] ?? '#!', $subchild['nama'] ?? '') ?>
                     <li><a href="<?= $subchild_link ?>" class="dashboard-sub-link">- <?= strip_tags($subchild['nama']) ?></a></li>
                   <?php endforeach ?>
                 <?php endif ?>
@@ -82,7 +121,7 @@
             </ul>
           </div>
         <?php else: ?>
-          <?php $menu_link = $menu['link_url'] ?? '#!' ?>
+          <?php $menu_link = $normalize_menu_link($menu['link_url'] ?? '#!', $menu['nama'] ?? '') ?>
           <?php $menu_name = trim(strip_tags((string) ($menu['nama'] ?? ''))) ?>
           <?php $menu_name_normalized = strtolower($menu_name) ?>
           <?php $hide_link_icon = in_array($menu_name_normalized, ['publikasi', 'lapak desa'], true) ?>

@@ -81,6 +81,12 @@
 
       <?php $this->load->view($folder_themes . '/commons/running_text') ?>
 
+      <?php
+        $this->load->view($folder_themes . '/widgets/infografis', [
+          'judul_widget' => 'Infografis',
+        ]);
+      ?>
+
       <section class="dashboard-stat-grid">
         <article class="dashboard-stat-card">
           <span class="dashboard-stat-label">Artikel Ditampilkan</span>

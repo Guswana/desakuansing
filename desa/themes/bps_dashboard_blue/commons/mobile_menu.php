@@ -2,8 +2,46 @@
 
 <?php
   $menu_atas = menu_tema() ?: [];
+  $current_host = parse_url(site_url(), PHP_URL_HOST) ?: '';
 
-  $render_mobile_menu = function(array $items, int $level = 0) use (&$render_mobile_menu) {
+  $normalize_menu_link = static function ($link, $menu_name = '') use ($current_host) {
+    $link = trim((string) $link);
+    $menu_name = strtolower(trim(strip_tags((string) $menu_name)));
+
+    if ($menu_name === 'prestasi desa') {
+      return site_url('artikel/kategori/potensi-desa');
+    }
+
+    if ($link === '' || $link === '#!') {
+      return '#!';
+    }
+
+    if (strpos($link, 'mailto:') === 0 || strpos($link, 'tel:') === 0 || strpos($link, '#') === 0) {
+      return $link;
+    }
+
+    if (preg_match('~^(?:https?:)?//~i', $link)) {
+      $parsed_host = parse_url($link, PHP_URL_HOST) ?: '';
+      $parsed_path = parse_url($link, PHP_URL_PATH) ?: '';
+
+      if ($parsed_host && $current_host && strcasecmp($parsed_host, $current_host) === 0 && $parsed_path !== '') {
+        $link = ltrim($parsed_path, '/');
+      } else {
+        return $link;
+      }
+    }
+
+    if ($current_host && stripos($link, $current_host . '/') === 0) {
+      $link = substr($link, strlen($current_host) + 1);
+    }
+
+    $link = preg_replace('~^/?index\.php/~i', '', $link);
+    $link = ltrim($link, '/');
+
+    return menu_slug($link);
+  };
+
+  $render_mobile_menu = function(array $items, int $level = 0) use (&$render_mobile_menu, $normalize_menu_link) {
     if (empty($items)) {
       return;
     }
@@ -18,7 +56,7 @@
           $children = $menu['childrens'] ?? [];
           $has_dropdown = is_array($children) && count($children) > 0;
           $menu_name = trim(strip_tags((string) ($menu['nama'] ?? '')));
-          $menu_link = $menu['link_url'] ?? '#!';
+          $menu_link = $normalize_menu_link($menu['link_url'] ?? '#!', $menu['nama'] ?? '');
           $padding_left = number_format(1 + ($level * 0.9), 2, '.', '');
         ?>
         <li class="dashboard-mobile-menu-item<?= $has_dropdown ? ' dashboard-mobile-menu-item--has-children' : '' ?>"<?= $has_dropdown ? ' x-data="{open: false}"' : '' ?>>

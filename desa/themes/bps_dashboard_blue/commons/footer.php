@@ -31,6 +31,25 @@
             'icon' => 'fa-youtube'
         ]
     ];
+
+    $alamat_parts = [];
+    if (!empty($desa['alamat_kantor'])) {
+        $alamat_parts[] = ucwords($desa['alamat_kantor']);
+    }
+    if (!empty($desa['nama_kecamatan'])) {
+        $alamat_parts[] = ucfirst($this->setting->sebutan_kecamatan_singkat) . ' ' . ucwords($desa['nama_kecamatan']);
+    }
+    if (!empty($desa['nama_kabupaten'])) {
+        $alamat_parts[] = ucfirst($this->setting->sebutan_kabupaten_singkat) . ' ' . ucwords($desa['nama_kabupaten']);
+    }
+    if (!empty($desa['nama_propinsi'])) {
+        $alamat_parts[] = 'Provinsi ' . ucwords($desa['nama_propinsi']);
+    }
+    if (!empty($desa['kode_pos'])) {
+        $alamat_parts[] = $desa['kode_pos'];
+    }
+
+    $alamat_lengkap = implode(', ', $alamat_parts);
 ?>
 
 <?php foreach($sosmed as $social) : ?>
@@ -42,28 +61,47 @@
 <?php $this->load->view($folder_themes .'/commons/back_to_top') ?>
 
 <footer class="container mx-auto lg:px-5 px-3 pt-5 footer footer-dashboard">
-    <div class="footer-dashboard-inner text-white py-5 px-5 rounded-t-xl text-sm flex flex-col gap-3 lg:flex-row justify-between items-center text-center lg:text-left">
-        <span class="space-y-2">
+    <div class="footer-dashboard-inner rounded-t-xl overflow-hidden">
+        <div class="footer-dashboard-main text-white py-8 px-5 lg:px-10">
+            <div class="footer-dashboard-brand">
+                <img src="<?= gambar_desa($desa['logo']) ?>" alt="Logo <?= NAMA_DESA ?>" class="footer-dashboard-logo">
+                <div>
+                    <p class="footer-dashboard-brand-label">Pemerintah</p>
+                    <h3 class="footer-dashboard-brand-title"><?= strtoupper(NAMA_DESA) ?></h3>
+                </div>
+            </div>
+
+            <div class="footer-dashboard-info">
+                <p class="footer-dashboard-address"><?= html_escape($alamat_lengkap ?: ucfirst($this->setting->sebutan_kecamatan_singkat) . ' ' . ucwords($desa['nama_kecamatan'])) ?></p>
+                <div class="footer-dashboard-important">
+                    <p class="footer-dashboard-important-item"><i class="fas fa-fire-extinguisher"></i> Damkar Sektor Baserah: <a href="tel:07602525330">07602525330</a></p>
+                    <p class="footer-dashboard-important-item"><i class="fas fa-shield-alt "></i> Kepolisian: <a href="tel:110">110</a></p>
+                    <p class="footer-dashboard-important-item"><i class="fas fa-hospital"></i> Puskesmas: <a href="tel:082379811110">082379811110</a></p>
+                </div>
+            </div>
+
+            <ul class="footer-dashboard-social">
+                <?php foreach($social_media as $sm) : ?>
+                    <?php if($link = ($sm['link'] ?? null)) : ?>
+                    <li class="inline-block"><a href="<?= $link ?>" class="inline-flex items-center justify-center <?= $sm['color'] ?> h-8 w-8 rounded-full footer-social-link"><i class="fab fa-lg <?= $sm['icon'] ?>"></i></a></li>
+                    <?php endif ?>
+                <?php endforeach ?>
+            </ul>
+
+            <?php if (setting('tte')): ?>
+                <div class="footer-dashboard-bsre">
+                    <img src="<?=asset('assets/images/bsre.png?v', false); ?>" alt="Bsre" class="img-responsive" style="width: 185px;" />
+                </div>
+            <?php endif ?>
+        </div>
+
+        <div class="footer-dashboard-bottom text-white py-4 px-5 text-sm text-center">
             <p>Hak cipta situs &copy; <?= date('Y') ?> - <?= NAMA_DESA ?></p>
-            <p><a href="https://opensid.my.id" class="underline decoration-blue-100 underline-offset-1 decoration-2" target="_blank" rel="noopener">BPS Dashboard Blue v1.0.0</a> - <a href="https://opensid.my.id" class="underline decoration-blue-100 underline-offset-1 decoration-2" target="_blank" rel="noopener">OpenSID <?= ambilVersi() ?></a> -
+            <p><a href="https://opensid.my.id" target="_blank" rel="noopener">BPS Dashboard Blue v1.0.0</a> - <a href="https://opensid.my.id" target="_blank" rel="noopener">OpenSID <?= ambilVersi() ?></a>
             <?php if (file_exists('mitra')): ?>
-                Hosting didukung <a href="https://my.idcloudhost.com/aff.php?aff=3172" rel="noopener noreferrer" target="_blank">
-                <img src="<?= base_url('/assets/images/Logo-IDcloudhost.png')?>" class="h-4 inline-block" alt="Logo-IDCloudHost" title="Logo-IDCloudHost"></a>
+                - Hosting didukung <a href="https://my.idcloudhost.com/aff.php?aff=3172" rel="noopener noreferrer" target="_blank"><img src="<?= base_url('/assets/images/Logo-IDcloudhost.png')?>" class="h-4 inline-block" alt="Logo-IDCloudHost" title="Logo-IDCloudHost"></a>
             <?php endif; ?>
             </p>
-        </span>
-        <?php if (setting('tte')): ?>
-            <div class="space-x-1">
-                <img src="<?=asset('assets/images/bsre.png?v', false); ?>" alt="Bsre" class="img-responsive" style="width: 185px;" />
-            </div>
-        <?php endif ?>
-        
-        <ul class="space-x-1">
-            <?php foreach($social_media as $sm) : ?>
-                <?php if($link = $sm['link']) : ?>
-                <li class="inline-block"><a href="<?= $link ?>" class="inline-flex items-center justify-center <?= $sm['color'] ?> h-8 w-8 rounded-full footer-social-link"><i class="fab fa-lg <?= $sm['icon'] ?>"></i></a></li>
-                <?php endif ?>
-            <?php endforeach ?>
-        </ul>
+        </div>
     </div>
 </footer>
