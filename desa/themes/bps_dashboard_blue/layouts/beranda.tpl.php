@@ -54,6 +54,7 @@
     && count($slider_gambar['gambar']) > 0
     && $this->uri->segment(2) != 'kategori'
     && ($this->uri->segment(2) !== 'index' && $this->uri->segment(1) !== 'index');
+  $is_article_category_page = $this->uri->segment(1) === 'artikel' && $this->uri->segment(2) === 'kategori';
 
 ?>
 <div class="container mx-auto lg:px-4 px-3 my-5 dashboard-content-wrap dashboard-homepage text-gray-700">
@@ -81,29 +82,31 @@
 
       <?php $this->load->view($folder_themes . '/commons/running_text') ?>
 
-      <?php
-        $this->load->view($folder_themes . '/widgets/infografis', [
-          'judul_widget' => 'Infografis',
-        ]);
-      ?>
+      <?php if (!$is_article_category_page) : ?>
+        <?php
+          $this->load->view($folder_themes . '/widgets/infografis', [
+            'judul_widget' => 'Infografis',
+          ]);
+        ?>
 
-      <section class="dashboard-stat-grid">
-        <article class="dashboard-stat-card">
-          <span class="dashboard-stat-label">Artikel Ditampilkan</span>
-          <strong class="dashboard-stat-value"><?= number_format($jumlah_artikel, 0, ',', '.') ?></strong>
-          <span class="dashboard-stat-desc">Publikasi terbaru pada halaman aktif</span>
-        </article>
-        <article class="dashboard-stat-card">
-          <span class="dashboard-stat-label">Slider Beranda</span>
-          <strong class="dashboard-stat-value"><?= number_format($jumlah_slider, 0, ',', '.') ?></strong>
-          <span class="dashboard-stat-desc">Visual utama untuk informasi prioritas</span>
-        </article>
-        <article class="dashboard-stat-card">
-          <span class="dashboard-stat-label">Widget Aktif</span>
-          <strong class="dashboard-stat-value"><?= number_format($jumlah_widget, 0, ',', '.') ?></strong>
-          <span class="dashboard-stat-desc">Panel layanan dan data pendukung</span>
-        </article>
-      </section>
+        <section class="dashboard-stat-grid">
+          <article class="dashboard-stat-card">
+            <span class="dashboard-stat-label">Artikel Ditampilkan</span>
+            <strong class="dashboard-stat-value"><?= number_format($jumlah_artikel, 0, ',', '.') ?></strong>
+            <span class="dashboard-stat-desc">Publikasi terbaru pada halaman aktif</span>
+          </article>
+          <article class="dashboard-stat-card">
+            <span class="dashboard-stat-label">Slider Beranda</span>
+            <strong class="dashboard-stat-value"><?= number_format($jumlah_slider, 0, ',', '.') ?></strong>
+            <span class="dashboard-stat-desc">Visual utama untuk informasi prioritas</span>
+          </article>
+          <article class="dashboard-stat-card">
+            <span class="dashboard-stat-label">Widget Aktif</span>
+            <strong class="dashboard-stat-value"><?= number_format($jumlah_widget, 0, ',', '.') ?></strong>
+            <span class="dashboard-stat-desc">Panel layanan dan data pendukung</span>
+          </article>
+        </section>
+      <?php endif; ?>
 
       <?php if($show_highlight) : ?>
         <section class="dashboard-highlight-grid">
