@@ -992,13 +992,16 @@
 }
 
 .dashboard-infografis-nav {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  margin-top: 0;
 }
 
 .dashboard-infografis-btn {
+  position: absolute;
+  top: 50%;
   width: 34px;
   height: 34px;
   border: 0;
@@ -1008,18 +1011,37 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  z-index: 6;
+  pointer-events: auto;
   box-shadow: 0 12px 24px -18px rgba(10, 77, 150, 0.9);
+  transform: translateY(-50%);
   transition: transform 0.18s ease, filter 0.18s ease;
 }
 
 .dashboard-infografis-btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(calc(-50% - 1px));
   filter: brightness(1.06);
+}
+
+.dashboard-infografis-prev {
+  left: -0.75rem;
+}
+
+.dashboard-infografis-next {
+  right: -0.75rem;
 }
 
 @media (max-width: 640px) {
   .dashboard-infografis-media {
     min-height: 360px;
+  }
+
+  .dashboard-infografis-prev {
+    left: -0.3rem;
+  }
+
+  .dashboard-infografis-next {
+    right: -0.3rem;
   }
 }
 

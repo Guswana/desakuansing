@@ -12,6 +12,8 @@
       return site_url('artikel/kategori/potensi-desa');
     }
 
+    $query = '';
+
     if ($link === '' || $link === '#!') {
       return '#!';
     }
@@ -23,9 +25,11 @@
     if (preg_match('~^(?:https?:)?//~i', $link)) {
       $parsed_host = parse_url($link, PHP_URL_HOST) ?: '';
       $parsed_path = parse_url($link, PHP_URL_PATH) ?: '';
+      $parsed_query = parse_url($link, PHP_URL_QUERY) ?: '';
 
       if ($parsed_host && $current_host && strcasecmp($parsed_host, $current_host) === 0 && $parsed_path !== '') {
         $link = ltrim($parsed_path, '/');
+        $query = $parsed_query;
       } else {
         return $link;
       }
@@ -38,7 +42,26 @@
     $link = preg_replace('~^/?index\.php/~i', '', $link);
     $link = ltrim($link, '/');
 
-    return menu_slug($link);
+    if ($link === '') {
+      return site_url();
+    }
+
+    $legacy_link_patterns = [
+      '~^artikel/\d+$~i',
+      '~^kategori/\d+$~i',
+      '~^data-suplemen/\d+$~i',
+      '~^data-kelompok/\d+$~i',
+      '~^data-lembaga/\d+$~i',
+      '~^statistik/[^/]+$~i',
+    ];
+
+    foreach ($legacy_link_patterns as $pattern) {
+      if (preg_match($pattern, $link)) {
+        return menu_slug($link);
+      }
+    }
+
+    return site_url($link . ($query ? '?' . $query : ''));
   };
 
   $render_mobile_menu = function(array $items, int $level = 0) use (&$render_mobile_menu, $normalize_menu_link) {

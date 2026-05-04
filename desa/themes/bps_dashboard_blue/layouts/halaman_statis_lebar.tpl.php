@@ -17,20 +17,18 @@
       <main class="dashboard-center-column">
         <?php $this->load->view($folder_themes . '/commons/running_text') ?>
         <div class="space-y-1 bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
-          <?php if(IS_PREMIUM) : ?>
-            <?php if(preg_match("/halaman_statis/i", $halaman_statis)) : ?>
-              <?php $this->load->view($halaman_statis); ?>
-              <?php else : ?>
-                <?php $halaman_statis = str_replace('home/idm', 'idm/index', $halaman_statis); ?>
-                <?php $this->load->view("{$folder_themes}/partials/{$halaman_statis}"); ?>
-            <?php endif ?>
-            <?php else : ?>
-              <?php if (in_array($halaman_statis, ['web/halaman_statis/lapak', 'home/idm', 'idm/index'])): ?>
-                  <?php $halaman_statis = $halaman_statis === 'web/halaman_statis/lapak' ? 'lapak/index' : ($halaman_statis === 'home/idm' ? 'idm/index' : $halaman_statis) ?>
-                  <?php $this->load->view("{$folder_themes}/partials/{$halaman_statis}"); ?>
-                <?php else: ?>
-                  <?php $this->load->view($halaman_statis); ?>
-              <?php endif; ?>
+          <?php
+            $resolved_halaman_statis = str_replace('home/idm', 'idm/index', $halaman_statis);
+            $resolved_halaman_statis = $resolved_halaman_statis === 'web/halaman_statis/lapak' ? 'lapak/index' : $resolved_halaman_statis;
+
+            $theme_partial_file = FCPATH . str_replace('/', DIRECTORY_SEPARATOR, $this->theme_folder . '/' . $this->theme . '/partials/' . $resolved_halaman_statis . '.php');
+            $use_theme_partial = !preg_match('/halaman_statis/i', $resolved_halaman_statis) && is_file($theme_partial_file);
+          ?>
+
+          <?php if ($use_theme_partial) : ?>
+            <?php $this->load->view("{$folder_themes}/partials/{$resolved_halaman_statis}"); ?>
+          <?php else : ?>
+            <?php $this->load->view($resolved_halaman_statis); ?>
           <?php endif ?>
         </div>
       </main>
