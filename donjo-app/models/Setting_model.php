@@ -165,6 +165,8 @@ class Setting_model extends MY_Model
     {
         $hasil = true;
 
+        $this->load->model('theme_model');
+
         // TODO : Jika sudah dipisahkan, buat agar upload gambar dinamis/bisa menyesuaikan dengan kebutuhan tema (u/ Modul Pengaturan Tema)
         if ($data['latar_website'] != '') {
             $hasil = $hasil && $this->upload_img('latar_website', $this->theme_model->lokasi_latar_website(str_replace('desa/', '', $this->setting->web_theme)), $this->setting->latar_website);
