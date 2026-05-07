@@ -14,6 +14,14 @@
 @endpush
 
 @push('scripts')
+    @php
+        $mapboxKey = mapbox_public_token();
+        $jenisPeta = (string) setting('jenis_peta');
+
+        if ($mapboxKey !== '' && ! in_array($jenisPeta, ['3', '4', '5'], true)) {
+            $jenisPeta = '5';
+        }
+    @endphp
     <!-- OpenStreetMap Js-->
     <script src="{{ asset('js/leaflet.js') }}"></script>
     <script src="{{ asset('js/turf.min.js') }}"></script>
@@ -40,8 +48,8 @@
     <script src="{{ asset('js/Leaflet.fullscreen.min.js') }}"></script>
     <script>
         // pengaturan peta
-        var MAPBOX_KEY = '{{ setting('mapbox_key') }}';
-        var JENIS_PETA = '{{ setting('jenis_peta') }}';
+        var MAPBOX_KEY = '{{ $mapboxKey }}';
+        var JENIS_PETA = '{{ $jenisPeta }}';
         var TAMPIL_LUAS = "{{ setting('tampil_luas_peta') }}";
         var pengaturan_peta = {
             maxZoom: '{{ setting('max_zoom_peta') }}',

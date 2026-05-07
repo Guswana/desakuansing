@@ -9,7 +9,7 @@
 
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'root';
-$db['default']['password'] = 'eyJpdiI6InBOaHFIU1JmT2hlMEdqRmdWbzc2NEE9PSIsInZhbHVlIjoiaVI4LytSZm4ydmhVcFRhc3YyRG1UZz09IiwibWFjIjoiMDg2N2E4ZTQ2MzRlOTc4ZmU3MzZlZTY5YmIxZWMxYzI3NzQ4MzkzNDU0YjEwOTUyMjI5NTZlMzg2NTI5ZTdmMiIsInRhZyI6IiJ9';
+$db['default']['password'] = '';
 $db['default']['port']     = 3306;
 $db['default']['database'] = 'perhentianluas_sicantik';
 // $db['default']['database'] = 'desakuansing';

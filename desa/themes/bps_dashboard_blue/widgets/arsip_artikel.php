@@ -1,5 +1,13 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<?php
+  $arsip_tabs = [
+    'terkini' => array_slice(is_array($arsip_terkini ?? null) ? $arsip_terkini : [], 0, 4),
+    'populer' => array_slice(is_array($arsip_populer ?? null) ? $arsip_populer : [], 0, 4),
+    'acak' => array_slice(is_array($arsip_acak ?? null) ? $arsip_acak : [], 0, 4),
+  ];
+?>
+
 <div class="box">
   <div class="box-header">
     <h3 class="box-title">
@@ -24,10 +32,10 @@
     </ul>
 
     <div class="tab-content">
-      <?php foreach (array('terkini' => 'arsip_terkini', 'populer' => 'arsip_populer', 'acak' => 'arsip_acak') as $jenis => $jenis_arsip) : ?>
+      <?php foreach ($arsip_tabs as $jenis => $items) : ?>
       <div id="<?= $jenis ?>" class="tab-pane fade <?php ($jenis == 'terkini') and print('show active') ?>" role="tabpanel">
         <div class="divide-y">
-          <?php foreach ($$jenis_arsip as $arsip): ?>
+          <?php foreach ($items as $arsip): ?>
           <div class="flex gap-3 py-3">
             <a href="<?= site_url('artikel/'.buat_slug($arsip))?>" class="w-8 flex-shrink-0">
               <?php if (is_file(LOKASI_FOTO_ARTIKEL."kecil_$arsip[gambar]")): ?>

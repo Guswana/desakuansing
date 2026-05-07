@@ -5,6 +5,7 @@
     <i class="fas fa-search absolute top-1/2 left-0 transform -translate-y-1/2 z-10 px-3 text-gray-500"></i>
     <input type="text" name="cari" class="form-input px-10 w-full h-12 bg-white relative inline-block dashboard-search-input" placeholder="Cari layanan, berita, atau data desa...">
   </form>
+
   <?php if ($w_cos): ?>
     <?php foreach($w_cos as $widget) : ?>
       <?php

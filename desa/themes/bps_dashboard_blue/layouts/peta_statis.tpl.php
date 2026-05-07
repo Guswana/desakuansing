@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="<?= asset('css/leaflet.css') ?>">
   <link rel="stylesheet" href="<?= asset('css/mapbox-gl.css') ?>">
   <link rel="stylesheet" href="<?= asset('css/peta.css'); ?>">
+  <link rel="stylesheet" href="<?= base_url("$this->theme_folder/$this->theme/assets/css/custom.css?" . THEME_VERSION) ?>">
 
   <?php $this->load->view('global/validasi_form', ['web_ui' => true]); ?>
   <style>
@@ -39,6 +40,7 @@
   </style>
 
   <main class="container w-full space-y-1 text-gray-600">
+    <?php $this->load->view($folder_themes . '/commons/running_text') ?>
     <div class="page-title text-center">
       <h2 class="text-3xl font-bold text-bold my-0 pt-6 pb-2">Peta <?= NAMA_DESA ?></h2>
       <a href="<?= site_url() ?>" class="inline-block" class="text-link hover:text-link">Kembali ke Beranda</a>

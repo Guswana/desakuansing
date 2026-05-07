@@ -2,7 +2,7 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 container px-3 lg:px-5">
   <?php foreach($data_widget as $subdata_name => $subdatas) : ?>
-    <div class="shadow bg-white rounded-lg overflow-hidden">
+    <div class="shadow bg-white rounded-lg overflow-hidden dashboard-apbdesa-card">
       <h3 class="bg-primary-100 text-white px-5 py-3 text-h5">
         <?=
           \Illuminate\Support\Str::of($subdatas['laporan'])

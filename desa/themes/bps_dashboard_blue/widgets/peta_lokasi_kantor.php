@@ -6,6 +6,8 @@ $mapbox_key = bps_dashboard_blue_mapbox_key();
 $map_external_url = $mapbox_key
   ? 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11.html?title=false&access_token=' . $mapbox_key . '#15/' . $data_config['lat'] . '/' . $data_config['lng']
   : 'https://www.openstreetmap.org/#map=15/' . $data_config['lat'] . '/' . $data_config['lng'];
+
+$detail_panel_id = 'detail-kantor-' . substr(md5((string) $judul_widget . '-' . ($desa['nama_desa'] ?? '')), 0, 10);
 ?>
 
 <div class="box box-primary box-solid">
@@ -16,72 +18,130 @@ $map_external_url = $mapbox_key
   </div>
   <div class="box-body">
     <div id="map_canvas" style="height:200px;"></div>
-    <button class="btn btn-accent btn-block mt-5"><a
-        href="<?= $map_external_url ?>"
-        style="color:#fff;" target="_blank" rel="noopener noreferrer">Buka Peta</a></button>
-    <button class="btn btn-accent btn-block mt-5" data-bs-toggle="modal" data-bs-target="#detail">
+    <a class="btn btn-accent btn-block mt-5 text-center" href="<?= html_escape($map_external_url) ?>" target="_blank" rel="noopener noreferrer">Buka Peta</a>
+    <button type="button" class="btn btn-accent btn-block mt-5 js-kantor-detail-toggle" data-target="#<?= html_escape($detail_panel_id) ?>" aria-expanded="false" aria-controls="<?= html_escape($detail_panel_id) ?>">
       Detail
     </button>
-    <!-- Modal -->
-    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
-      id="detail" tabindex="-1" aria-labelledby="detailLabel" aria-hidden="true">
-      <div class="modal-dialog relative w-auto pointer-events-none">
-        <div
-          class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-          <div
-            class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-            <h5 class="text-xl font-medium leading-normal text-gray-800" id="detailLabel">Detail
-              <?= ucwords($this->setting->sebutan_desa) ?></h5>
-            <button type="button"
-              class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
-              data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body relative p-4 content">
-            <table class="max-w-full text-xs lg:text-sm table-auto w-full">
-              <tbody>
-                <tr>
-                  <td>Alamat</td>
-                  <td>:</td>
-                  <td><?=$desa['alamat_kantor']?></td>
-                </tr>
-                <tr>
-                  <td><?=ucwords($this->setting->sebutan_desa)." "?></td>
-                  <td>:</td>
-                  <td><?=$desa['nama_desa']?></td>
-                </tr>
-                <tr>
-                  <td><?=ucwords($this->setting->sebutan_kecamatan)?></td>
-                  <td>:</td>
-                  <td><?=$desa['nama_kecamatan']?></td>
-                </tr>
-                <tr>
-                  <td><?=ucwords($this->setting->sebutan_kabupaten)?></td>
-                  <td>:</td>
-                  <td><?=$desa['nama_kabupaten']?></td>
-                </tr>
-                <tr>
-                  <td>Kodepos</td>
-                  <td>:</td>
-                  <td><?=$desa['kode_pos']?></td>
-                </tr>
-                <tr>
-                  <td>Telepon</td>
-                  <td>:</td>
-                  <td><?=$desa['telepon']?></td>
-                </tr>
-                <tr>
-                  <td>Email</td>
-                  <td>:</td>
-                  <td><?=$desa['email_desa']?></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+    <div id="<?= html_escape($detail_panel_id) ?>" class="dashboard-kantor-detail" hidden>
+      <div class="dashboard-kantor-detail__header">
+        <h5>Detail <?= html_escape(ucwords($this->setting->sebutan_desa)) ?></h5>
+      </div>
+      <div class="dashboard-kantor-detail__body">
+        <table class="dashboard-kantor-detail__table">
+          <tbody>
+            <tr>
+              <td>Alamat</td>
+              <td>: </td>
+              <td> <?= html_escape($desa['alamat_kantor']) ?></td>
+            </tr>
+            <tr>
+              <td><?= html_escape(ucwords($this->setting->sebutan_desa)) ?></td>
+              <td>: </td>
+              <td> <?= html_escape($desa['nama_desa']) ?></td>
+            </tr>
+            <tr>
+              <td><?= html_escape(ucwords($this->setting->sebutan_kecamatan)) ?></td>
+              <td>: </td>
+              <td> <?= html_escape($desa['nama_kecamatan']) ?></td>
+            </tr>
+            <tr>
+              <td><?= html_escape(ucwords($this->setting->sebutan_kabupaten)) ?></td>
+              <td>: </td>
+              <td> <?= html_escape($desa['nama_kabupaten']) ?></td>
+            </tr>
+            <tr>
+              <td>Kodepos</td>
+              <td>: </td>
+              <td> <?= html_escape($desa['kode_pos']) ?></td>
+            </tr>
+            <tr>
+              <td>Telepon</td>
+              <td>: </td>
+              <td> <?= html_escape($desa['telepon']) ?></td>
+            </tr>
+            <tr>
+              <td>Email</td>
+              <td>: </td>
+              <td> <?= html_escape($desa['email_desa']) ?></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
+
+
+<style>
+  .dashboard-kantor-detail {
+    margin-top: 1rem;
+    border: 1px solid rgba(11, 79, 154, 0.14);
+    border-radius: 0.85rem;
+    background: #f8fbff;
+    overflow: hidden;
+  }
+
+  .dashboard-kantor-detail__header {
+    padding: 0.8rem 1rem;
+    background: linear-gradient(120deg, rgba(11, 95, 181, 0.1) 0%, rgba(24, 134, 219, 0.04) 100%);
+    border-bottom: 1px solid rgba(11, 79, 154, 0.1);
+  }
+
+  .dashboard-kantor-detail__header h5 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #15467f;
+  }
+
+  .dashboard-kantor-detail__body {
+    padding: 0;
+  }
+
+  .dashboard-kantor-detail__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    color: #31445f;
+  }
+
+  .dashboard-kantor-detail__table td {
+    padding: 0.42rem 0.75rem;
+    vertical-align: top;
+    border-bottom: 1px solid rgba(11, 79, 154, 0.08);
+  }
+
+  .dashboard-kantor-detail__table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .dashboard-kantor-detail__table td:first-child {
+    width: 31%;
+    padding-left: 0.55rem;
+    padding-right: 0.35rem;
+    font-weight: 700;
+    color: #173f73;
+  }
+
+  .dashboard-kantor-detail__table td:nth-child(2) {
+    width: 18px;
+    min-width: 18px;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+    color: #4b6584;
+  }
+
+  .dashboard-kantor-detail__table td:last-child {
+    padding-left: 0.1rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .dashboard-kantor-detail[hidden] {
+    display: none !important;
+  }
+</style>
 
 
 <script>
@@ -119,5 +179,26 @@ $map_external_url = $mapbox_key
     styleControlPosition: 'top-right',
     styleId: jenisPetaDefault,
     zoom: zoom,
+  });
+
+  document.querySelectorAll('.js-kantor-detail-toggle').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var targetSelector = button.getAttribute('data-target');
+      var detailPanel = targetSelector ? document.querySelector(targetSelector) : null;
+
+      if (!detailPanel) {
+        return;
+      }
+
+      var isHidden = detailPanel.hasAttribute('hidden');
+
+      if (isHidden) {
+        detailPanel.removeAttribute('hidden');
+      } else {
+        detailPanel.setAttribute('hidden', 'hidden');
+      }
+
+      button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    });
   });
 </script>
