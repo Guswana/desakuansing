@@ -79,12 +79,13 @@ class Web_widget extends Admin_Controller
                 ->addIndexColumn()
                 ->addColumn('aksi', static function ($row): string {
                     $aksi = '';
+                    $formAdmin = $row->form_admin === 'web/tab/1000' ? 'web/agenda' : $row->form_admin;
 
                     if (can('u') && $row->jenis_widget != 1) {
                         $aksi .= '<a href="' . ci_route('web_widget.form', $row->id) . '" class="btn btn-warning btn-sm"  title="Ubah Data"><i class="fa fa-edit"></i></a> ';
                     }
-                    if ($row->form_admin) {
-                        $aksi .= '<a href="' . ci_route($row->form_admin) . '" class="btn btn-info btn-sm"  title="Form Admin"><i class="fa fa-sliders"></i></a> ';
+                    if ($formAdmin) {
+                        $aksi .= '<a href="' . ci_route($formAdmin) . '" class="btn btn-info btn-sm"  title="Form Admin"><i class="fa fa-sliders"></i></a> ';
                     }
                     if (can('u')) {
                         if ($row->enabled == StatusEnum::YA) {

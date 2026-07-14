@@ -541,7 +541,7 @@ class Data_awal extends MY_Model
                 'judul'        => 'Agenda',
                 'jenis_widget' => 1,
                 'urut'         => 6,
-                'form_admin'   => 'web/tab/1000',
+                'form_admin'   => 'web/agenda',
                 'setting'      => '',
             ],
             [
