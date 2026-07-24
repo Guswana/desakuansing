@@ -9,7 +9,7 @@
     $menu_name = strtolower(trim(strip_tags((string) $menu_name)));
 
     if ($menu_name === 'prestasi desa') {
-      return site_url('artikel/kategori/potensi-desa');
+      return site_url('artikel/kategori/prestasi-desa');
     }
 
     $query = '';
