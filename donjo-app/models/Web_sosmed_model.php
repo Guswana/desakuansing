@@ -159,6 +159,11 @@ class Web_sosmed_model extends MY_Model
                 $link = str_replace('phone=0', 'phone=62', $link);
                 break;
 
+            case $id === '6' && $tipe === '1':
+                $link = ($valid_link !== false ? $link : 'https://api.whatsapp.com/send?phone=' . $link);
+                $link = str_replace('phone=0', 'phone=62', $link);
+                break;
+
             case $id === '6' && $tipe === '2':
                 $link = ($valid_link !== false ? $link : 'https://chat.whatsapp.com/' . $link);
                 break;

@@ -10,9 +10,9 @@
 
     <div class="dashboard-topbar-actions">
       <?php if($this->setting->layanan_mandiri == 1) : ?>
-        <a href="<?= site_url('layanan-mandiri') ?>" class="dashboard-topbar-btn">Layanan Mandiri <i class="fas fa-external-link-alt ml-1"></i></a>
+        <a href="<?= site_url('layanan-mandiri') ?>" class="dashboard-topbar-btn" target="_blank">Layanan Mandiri <i class="fas fa-external-link-alt ml-1"></i></a>
       <?php endif ?>
-      <a href="<?= site_url('siteman') ?>" class="dashboard-topbar-btn">Login Admin <i class="fas fa-external-link-alt ml-1"></i></a>
+      <a href="<?= site_url('siteman') ?>" class="dashboard-topbar-btn" target="_blank">Login Admin <i class="fas fa-external-link-alt ml-1"></i></a>
     </div>
   </div>
 </nav>

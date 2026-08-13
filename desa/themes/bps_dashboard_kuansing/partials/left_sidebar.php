@@ -1,6 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <?php
+  $surat_ahli_waris_modal_id = 'surat-ahli-waris-modal';
+  $surat_ahli_waris_menu_name = 'surat pernyataan ahli waris';
+  $surat_domisili_modal_id = 'surat-domisili-modal';
+  $surat_domisili_menu_name = 'surat pernyataan domisili';
   $dashboard_menu = menu_tema() ?: [];
   $left_menu_groups = $dashboard_menu;
   if (!is_array($left_menu_groups) || count($left_menu_groups) === 0) {
@@ -13,6 +17,16 @@
   }
 
   $current_host = parse_url(site_url(), PHP_URL_HOST) ?: '';
+
+  $is_external_link = static function ($link, $current_host) {
+    if (preg_match('~^(?:https?:)?//~i', $link)) {
+      $parsed_host = parse_url($link, PHP_URL_HOST) ?: '';
+      if ($parsed_host && $current_host && strcasecmp($parsed_host, $current_host) !== 0) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   $normalize_menu_link = static function ($link, $menu_name = '') use ($current_host) {
     $link = trim((string) $link);
@@ -133,11 +147,35 @@
             <ul class="dashboard-accordion-list" x-show="open" x-transition>
               <?php foreach($children as $child): ?>
                 <?php $child_link = $normalize_menu_link($child['link_url'] ?? '#!', $child['nama'] ?? '') ?>
-                <li><a href="<?= $child_link ?>"><?= strip_tags($child['nama']) ?></a></li>
+                <?php $child_name = trim(strip_tags((string) ($child['nama'] ?? ''))) ?>
+                <?php $child_is_ahli_waris = stripos($child_name, 'ahli waris') !== false ?>
+                <?php $child_is_domisili = stripos($child_name, 'domisili') !== false ?>
+                <?php $child_target = $is_external_link($child['link_url'] ?? '', $current_host) ? ' target="_blank"' : '' ?>
+                <li>
+                  <?php if ($child_is_ahli_waris) : ?>
+                    <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $surat_ahli_waris_modal_id ?>')"><?= $child_name ?></button>
+                  <?php elseif ($child_is_domisili) : ?>
+                    <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $surat_domisili_modal_id ?>')"><?= $child_name ?></button>
+                  <?php else : ?>
+                    <a href="<?= $child_link ?>"<?= $child_target ?>><?= $child_name ?></a>
+                  <?php endif ?>
+                </li>
                 <?php if(!empty($child['childrens'])): ?>
                   <?php foreach($child['childrens'] as $subchild): ?>
                     <?php $subchild_link = $normalize_menu_link($subchild['link_url'] ?? '#!', $subchild['nama'] ?? '') ?>
-                    <li><a href="<?= $subchild_link ?>" class="dashboard-sub-link">- <?= strip_tags($subchild['nama']) ?></a></li>
+                    <?php $subchild_name = trim(strip_tags((string) ($subchild['nama'] ?? ''))) ?>
+                    <?php $subchild_is_ahli_waris = stripos($subchild_name, 'ahli waris') !== false ?>
+                    <?php $subchild_is_domisili = stripos($subchild_name, 'domisili') !== false ?>
+                    <?php $subchild_target = $is_external_link($subchild['link_url'] ?? '', $current_host) ? ' target="_blank"' : '' ?>
+                    <li>
+                    <?php if ($subchild_is_ahli_waris) : ?>
+                        <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $surat_ahli_waris_modal_id ?>')">- <?= $subchild_name ?></button>
+                      <?php elseif ($subchild_is_domisili) : ?>
+                        <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $surat_domisili_modal_id ?>')">- <?= $subchild_name ?></button>
+                      <?php else : ?>
+                        <a href="<?= $subchild_link ?>" class="dashboard-sub-link"<?= $subchild_target ?>>- <?= $subchild_name ?></a>
+                      <?php endif ?>
+                    </li>
                   <?php endforeach ?>
                 <?php endif ?>
               <?php endforeach ?>
@@ -146,15 +184,34 @@
         <?php else: ?>
           <?php $menu_link = $normalize_menu_link($menu['link_url'] ?? '#!', $menu['nama'] ?? '') ?>
           <?php $menu_name = trim(strip_tags((string) ($menu['nama'] ?? ''))) ?>
+          <?php $menu_is_ahli_waris = stripos($menu_name, 'ahli waris') !== false ?>
+          <?php $menu_is_domisili = stripos($menu_name, 'domisili') !== false ?>
           <?php $menu_name_normalized = strtolower($menu_name) ?>
           <?php $hide_link_icon = in_array($menu_name_normalized, ['publikasi', 'lapak desa'], true) ?>
+          <?php $menu_target = $is_external_link($menu['link_url'] ?? '', $current_host) ? ' target="_blank"' : '' ?>
           <div class="dashboard-accordion-item dashboard-accordion-item--link">
-            <a href="<?= $menu_link ?>" class="dashboard-accordion-link<?= $hide_link_icon ? ' dashboard-accordion-link--plain' : '' ?>">
-              <span><?= $menu_name ?></span>
-              <?php if(!$hide_link_icon): ?>
-                <i class="fas fa-chevron-right text-xs"></i>
-              <?php endif ?>
-            </a>
+            <?php if ($menu_is_ahli_waris) : ?>
+              <button type="button" class="dashboard-accordion-link dashboard-accordion-link--button<?= $hide_link_icon ? ' dashboard-accordion-link--plain' : '' ?>" onclick="dashboardOpenModal(event, '<?= $surat_ahli_waris_modal_id ?>')">
+                <span><?= $menu_name ?></span>
+                <?php if(!$hide_link_icon): ?>
+                  <i class="fas fa-chevron-right text-xs"></i>
+                <?php endif ?>
+              </button>
+            <?php elseif ($menu_is_domisili) : ?>
+              <button type="button" class="dashboard-accordion-link dashboard-accordion-link--button<?= $hide_link_icon ? ' dashboard-accordion-link--plain' : '' ?>" onclick="dashboardOpenModal(event, '<?= $surat_domisili_modal_id ?>')">
+                <span><?= $menu_name ?></span>
+                <?php if(!$hide_link_icon): ?>
+                  <i class="fas fa-chevron-right text-xs"></i>
+                <?php endif ?>
+              </button>
+            <?php else : ?>
+              <a href="<?= $menu_link ?>" class="dashboard-accordion-link<?= $hide_link_icon ? ' dashboard-accordion-link--plain' : '' ?>"<?= $menu_target ?>>
+                <span><?= $menu_name ?></span>
+                <?php if(!$hide_link_icon): ?>
+                  <i class="fas fa-chevron-right text-xs"></i>
+                <?php endif ?>
+              </a>
+            <?php endif ?>
           </div>
         <?php endif ?>
       <?php endforeach ?>

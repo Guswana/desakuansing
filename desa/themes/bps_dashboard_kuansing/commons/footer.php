@@ -52,9 +52,22 @@
     $alamat_lengkap = implode(', ', $alamat_parts);
 ?>
 
+<?php
+    $fix_whatsapp_link = static function ($nama, $link) {
+        $nama_lower = strtolower(trim(strip_tags($nama)));
+        if ($nama_lower === 'whatsapp' && preg_match('/instagram\.com\/(\d+)/', $link, $m)) {
+            return 'https://api.whatsapp.com/send?phone=62' . ltrim($m[1], '0');
+        }
+        if ($nama_lower === 'whatsapp' && preg_match('/(\d{10,15})/', $link, $m) && ! str_contains($link, 'whatsapp.com')) {
+            return 'https://api.whatsapp.com/send?phone=62' . ltrim($m[1], '0');
+        }
+        return $link;
+    };
+?>
+
 <?php foreach($sosmed as $social) : ?>
-    <?php if($social['link']) : ?>  
-        <?php $social_media[strtolower($social['nama'])]['link'] = $social['link']; ?>
+    <?php if($social['link']) : ?>
+        <?php $social_media[strtolower($social['nama'])]['link'] = $fix_whatsapp_link($social['nama'], $social['link']); ?>
     <?php endif ?>
 <?php endforeach ?>
 
@@ -105,3 +118,6 @@
         </div>
     </div>
 </footer>
+
+<?php $this->load->view($folder_themes . '/partials/modal_surat_ahli_waris') ?>
+<?php $this->load->view($folder_themes . '/partials/modal_surat_domisili') ?>

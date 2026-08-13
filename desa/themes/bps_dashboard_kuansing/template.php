@@ -11,7 +11,7 @@
   <?php if($this->uri->segment(2) == 'kategori' && empty($judul_kategori)) : ?>
     <?php $this->load->view($folder_themes .'/commons/404') ?>
     <?php else : ?>
-      <div class="dashboard-shell">
+      <div class="dashboard-shell" x-data="{ suratAhliWarisModalOpen: false }" @keydown.escape.window="suratAhliWarisModalOpen = false">
         <?php $this->load->view($folder_themes . '/commons/loading_screen') ?>
         <?php $this->load->view($folder_themes .'/commons/header') ?>
         <?php $this->load->view($folder_themes .'/layouts/beranda.tpl.php') ?>

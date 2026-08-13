@@ -77,6 +77,7 @@
 <script src="<?= asset('js/highcharts/sankey.js'); ?>"></script>
 <script src="<?= asset('js/highcharts/organization.js'); ?>"></script>
 <script src="<?= asset('js/highcharts/accessibility.js'); ?>"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="<?= asset('js/mapbox-gl.js'); ?>"></script>
 <script src="<?= base_url("$this->theme_folder/$this->theme/assets/js/mapbox-native.js?" . THEME_VERSION) ?>"></script>
 <?php if (isset($halaman_peta)): ?>

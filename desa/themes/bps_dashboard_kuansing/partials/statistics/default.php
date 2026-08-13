@@ -12,6 +12,7 @@
     <div class="text-right space-x-2 text-sm space-y-2 md:space-y-0">
         <button class="btn btn-secondary button-switch" data-type="column">Bar Graph</button>
         <button class="btn btn-secondary button-switch is-active" data-type="pie">Pie Graph</button>
+        <button class="btn btn-secondary" id="downloadExcel"><i class="fa fa-file-excel-o"></i> Unduh Excel</button>
     </div>
 </div>
 <div id="statistics"></div>
@@ -109,4 +110,65 @@
 </style>
 <script>
     const dataStats = Object.values(<?= json_encode($stat) ?>);
+
+    document.getElementById('downloadExcel').addEventListener('click', function() {
+        var table = document.querySelector('.table-responsive table');
+        if (!table) return;
+
+        var wb = XLSX.utils.book_new();
+        var wsData = [];
+
+        // Header row 1
+        wsData.push(['No', 'Kelompok', 'Jumlah', '', 'Laki-laki', '', 'Perempuan', '']);
+        // Header row 2
+        wsData.push(['', '', 'n', '%', 'n', '%', 'n', '%']);
+
+        // Data rows
+        var dataRows = table.querySelectorAll('tbody tr');
+        var rowNum = 0;
+        dataRows.forEach(function(row) {
+            var cells = row.querySelectorAll('td');
+            if (cells.length >= 8) {
+                rowNum++;
+                wsData.push([
+                    rowNum,
+                    cells[1].textContent.trim(),
+                    parseFloat(cells[2].textContent.trim().replace(/,/g, '')) || 0,
+                    cells[3].textContent.trim(),
+                    parseFloat(cells[4].textContent.trim().replace(/,/g, '')) || 0,
+                    cells[5].textContent.trim(),
+                    parseFloat(cells[6].textContent.trim().replace(/,/g, '')) || 0,
+                    cells[7].textContent.trim()
+                ]);
+            }
+        });
+
+        var ws = XLSX.utils.aoa_to_sheet(wsData);
+
+        // Set column widths
+        ws['!cols'] = [
+            { wch: 5 },   // No
+            { wch: 25 },  // Kelompok
+            { wch: 10 },  // Jumlah n
+            { wch: 10 },  // Jumlah %
+            { wch: 12 },  // Laki-laki n
+            { wch: 12 },  // Laki-laki %
+            { wch: 14 },  // Perempuan n
+            { wch: 14 }   // Perempuan %
+        ];
+
+        // Merge header cells
+        ws['!merges'] = [
+            { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } },  // No
+            { s: { r: 0, c: 1 }, e: { r: 1, c: 1 } },  // Kelompok
+            { s: { r: 0, c: 2 }, e: { r: 0, c: 3 } },  // Jumlah
+            { s: { r: 0, c: 4 }, e: { r: 0, c: 5 } },  // Laki-laki
+            { s: { r: 0, c: 6 }, e: { r: 0, c: 7 } }   // Perempuan
+        ];
+
+        XLSX.utils.book_append_sheet(wb, ws, 'Data Statistik');
+
+        var fileName = 'Data_Penduduk_Menurut_<?= strtolower(str_replace(' ', '_', $heading)) ?>_' + new Date().toISOString().slice(0,10) + '.xlsx';
+        XLSX.writeFile(wb, fileName);
+    });
 </script>
