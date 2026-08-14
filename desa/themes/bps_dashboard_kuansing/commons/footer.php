@@ -119,5 +119,14 @@
     </div>
 </footer>
 
-<?php $this->load->view($folder_themes . '/partials/modal_surat_ahli_waris') ?>
-<?php $this->load->view($folder_themes . '/partials/modal_surat_domisili') ?>
+<?php
+  $surat_helper = FCPATH . $this->theme_folder . '/' . $this->theme . '/partials/surat_modal_helpers.php';
+  if (file_exists($surat_helper)) {
+    require_once $surat_helper;
+  }
+
+  $modal_dir = FCPATH . $this->theme_folder . '/' . $this->theme . '/partials/';
+  foreach (glob($modal_dir . 'modal_surat_*.php') as $modal_file) {
+    require $modal_file;
+  }
+?>

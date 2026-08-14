@@ -1,5 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<?php if (!function_exists('dashboard_resolve_surat_modal_id')): $helper = FCPATH . $this->theme_folder . '/' . $this->theme . '/partials/surat_modal_helpers.php'; if (file_exists($helper)) { require_once $helper; } endif; ?>
+
 <div class="dashboard-header-wrap">
   <div class="container md:px-4 lg:px-4">
     <?php $this->load->view($folder_themes .'/commons/main_menu') ?>

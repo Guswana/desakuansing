@@ -1,10 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <?php
-  $surat_ahli_waris_modal_id = 'surat-ahli-waris-modal';
-  $surat_ahli_waris_menu_name = 'surat pernyataan ahli waris';
-  $surat_domisili_modal_id = 'surat-domisili-modal';
-  $surat_domisili_menu_name = 'surat pernyataan domisili';
   $dashboard_menu = menu_tema() ?: [];
   $left_menu_groups = $dashboard_menu;
   if (!is_array($left_menu_groups) || count($left_menu_groups) === 0) {
@@ -148,14 +144,11 @@
               <?php foreach($children as $child): ?>
                 <?php $child_link = $normalize_menu_link($child['link_url'] ?? '#!', $child['nama'] ?? '') ?>
                 <?php $child_name = trim(strip_tags((string) ($child['nama'] ?? ''))) ?>
-                <?php $child_is_ahli_waris = stripos($child_name, 'ahli waris') !== false ?>
-                <?php $child_is_domisili = stripos($child_name, 'domisili') !== false ?>
+                <?php $child_modal_id = function_exists('dashboard_resolve_surat_modal_id') ? dashboard_resolve_surat_modal_id($child_name) : null ?>
                 <?php $child_target = $is_external_link($child['link_url'] ?? '', $current_host) ? ' target="_blank"' : '' ?>
                 <li>
-                  <?php if ($child_is_ahli_waris) : ?>
-                    <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $surat_ahli_waris_modal_id ?>')"><?= $child_name ?></button>
-                  <?php elseif ($child_is_domisili) : ?>
-                    <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $surat_domisili_modal_id ?>')"><?= $child_name ?></button>
+                  <?php if ($child_modal_id) : ?>
+                    <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $child_modal_id ?>')"><?= $child_name ?></button>
                   <?php else : ?>
                     <a href="<?= $child_link ?>"<?= $child_target ?>><?= $child_name ?></a>
                   <?php endif ?>
@@ -164,14 +157,11 @@
                   <?php foreach($child['childrens'] as $subchild): ?>
                     <?php $subchild_link = $normalize_menu_link($subchild['link_url'] ?? '#!', $subchild['nama'] ?? '') ?>
                     <?php $subchild_name = trim(strip_tags((string) ($subchild['nama'] ?? ''))) ?>
-                    <?php $subchild_is_ahli_waris = stripos($subchild_name, 'ahli waris') !== false ?>
-                    <?php $subchild_is_domisili = stripos($subchild_name, 'domisili') !== false ?>
+                    <?php $subchild_modal_id = function_exists('dashboard_resolve_surat_modal_id') ? dashboard_resolve_surat_modal_id($subchild_name) : null ?>
                     <?php $subchild_target = $is_external_link($subchild['link_url'] ?? '', $current_host) ? ' target="_blank"' : '' ?>
                     <li>
-                    <?php if ($subchild_is_ahli_waris) : ?>
-                        <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $surat_ahli_waris_modal_id ?>')">- <?= $subchild_name ?></button>
-                      <?php elseif ($subchild_is_domisili) : ?>
-                        <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $surat_domisili_modal_id ?>')">- <?= $subchild_name ?></button>
+                    <?php if ($subchild_modal_id) : ?>
+                        <button type="button" class="dashboard-sub-link dashboard-sub-link--button" onclick="dashboardOpenModal(event, '<?= $subchild_modal_id ?>')">- <?= $subchild_name ?></button>
                       <?php else : ?>
                         <a href="<?= $subchild_link ?>" class="dashboard-sub-link"<?= $subchild_target ?>>- <?= $subchild_name ?></a>
                       <?php endif ?>
@@ -184,21 +174,13 @@
         <?php else: ?>
           <?php $menu_link = $normalize_menu_link($menu['link_url'] ?? '#!', $menu['nama'] ?? '') ?>
           <?php $menu_name = trim(strip_tags((string) ($menu['nama'] ?? ''))) ?>
-          <?php $menu_is_ahli_waris = stripos($menu_name, 'ahli waris') !== false ?>
-          <?php $menu_is_domisili = stripos($menu_name, 'domisili') !== false ?>
+          <?php $menu_modal_id = function_exists('dashboard_resolve_surat_modal_id') ? dashboard_resolve_surat_modal_id($menu_name) : null ?>
           <?php $menu_name_normalized = strtolower($menu_name) ?>
           <?php $hide_link_icon = in_array($menu_name_normalized, ['publikasi', 'lapak desa'], true) ?>
           <?php $menu_target = $is_external_link($menu['link_url'] ?? '', $current_host) ? ' target="_blank"' : '' ?>
           <div class="dashboard-accordion-item dashboard-accordion-item--link">
-            <?php if ($menu_is_ahli_waris) : ?>
-              <button type="button" class="dashboard-accordion-link dashboard-accordion-link--button<?= $hide_link_icon ? ' dashboard-accordion-link--plain' : '' ?>" onclick="dashboardOpenModal(event, '<?= $surat_ahli_waris_modal_id ?>')">
-                <span><?= $menu_name ?></span>
-                <?php if(!$hide_link_icon): ?>
-                  <i class="fas fa-chevron-right text-xs"></i>
-                <?php endif ?>
-              </button>
-            <?php elseif ($menu_is_domisili) : ?>
-              <button type="button" class="dashboard-accordion-link dashboard-accordion-link--button<?= $hide_link_icon ? ' dashboard-accordion-link--plain' : '' ?>" onclick="dashboardOpenModal(event, '<?= $surat_domisili_modal_id ?>')">
+            <?php if ($menu_modal_id) : ?>
+              <button type="button" class="dashboard-accordion-link dashboard-accordion-link--button<?= $hide_link_icon ? ' dashboard-accordion-link--plain' : '' ?>" onclick="dashboardOpenModal(event, '<?= $menu_modal_id ?>')">
                 <span><?= $menu_name ?></span>
                 <?php if(!$hide_link_icon): ?>
                   <i class="fas fa-chevron-right text-xs"></i>
